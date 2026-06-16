@@ -18,8 +18,8 @@ y_raw = deque([0] * MAX_PONTOS, maxlen=MAX_PONTOS)
 y_mv = deque([0] * MAX_PONTOS, maxlen=MAX_PONTOS)
 
 # Expressão regular para capturar os números da string enviada pelo Zephyr
-# Esperado: "ADC: <raw> (raw), <mv> mV"
-regex_dados = re.compile(r"ADC:\s*(\d+)\s*\(raw\),\s*(\d+)\s*mV")
+# Esperado: "[<timestamp>] ADC: <raw> (raw), <mv> mV"
+regex_dados = re.compile(r"\[(\d+)\]\s*ADC:\s*(\d+)\s*\(raw\),\s*(\d+)\s*mV")
 
 # Inicialização da conexão serial
 try:
@@ -35,7 +35,7 @@ fig.suptitle('Leitura do ADC em Tempo Real - FRDM KL25z', fontsize=14)
 
 # Gráfico 1: Valor Raw
 linha_raw, = ax1.plot(x_data, y_raw, color='blue', label='Valor Raw (12 bits)')
-ax1.set_ylim(0, 4100) # O ADC está configurado para 12 bits (0 a 4095)
+ax1.set_ylim(0, 4150) # O ADC está configurado para 12 bits (0 a 4095)
 ax1.set_ylabel('Amplitude (Raw)')
 ax1.grid(True, linestyle='--', alpha=0.6)
 ax1.legend(loc='upper right')
@@ -58,8 +58,8 @@ def atualizar_grafico(frame):
             # Verifica se a linha lida corresponde ao padrão esperado
             match = regex_dados.search(linha_serial)
             if match:
-                raw_val = int(match.group(1))
-                mv_val = int(match.group(2))
+                raw_val = int(match.group(2))
+                mv_val = int(match.group(3))
                 
                 # Adiciona os novos valores à fila (removendo os mais antigos automaticamente)
                 y_raw.append(raw_val)

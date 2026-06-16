@@ -13,6 +13,7 @@
 
 static int16_t sample_buffer = 0;
 static int32_t mv = 0;
+static uint32_t timestamp_ms = 0;
 
 // Threads
 #define STACK_SIZE 1024
@@ -23,10 +24,14 @@ struct k_thread adc;
 void thread_ADC (void *arg1, void *arg2, void *arg3) {
     while (1) {
         // ADC
-        int err = adc_read(arg1, arg2);
+        int err = adc_read(arg1, arg2); // Faz leitura no adc
         if (err != 0) {
             printk("Falha na leitura do ADC: %d\n", err);
         } else {
+            // Registra o tempo exato (uptime em milissegundos) logo após a leitura
+            timestamp_ms = k_uptime_get_32();
+            
+            // Transforma em milivolts
             mv = sample_buffer;
             adc_raw_to_millivolts(ADC_VREF_MV, ADC_GAIN, ADC_RESOLUTION, &mv);
         }
@@ -40,7 +45,7 @@ K_THREAD_STACK_DEFINE(stack_com, STACK_SIZE);
 struct k_thread com;
 void thread_comunicate (void *arg1, void *arg2, void *arg3) {
     while (1) {
-    printk("ADC: %d (raw), %d mV\n", sample_buffer, mv);
+    printk("[%u] ADC: %d (raw), %d mV\n", timestamp_ms, sample_buffer, mv);
     
     //Wait
     k_msleep(100);
