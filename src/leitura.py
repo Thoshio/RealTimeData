@@ -19,7 +19,7 @@ y_mv = deque([0] * MAX_PONTOS, maxlen=MAX_PONTOS)
 
 # Expressão regular para capturar os números da string enviada pelo Zephyr
 # Esperado: "[<timestamp>] ADC: <raw> (raw), <mv> mV"
-regex_dados = re.compile(r"\[(\d+)\]\s*ADC:\s*(\d+)\s*\(raw\),\s*(\d+)\s*mV")
+regex_dados = re.compile(r"ADC:\s*(\d+)\s*\(raw\),\s*(\d+)\s*mV")
 
 # Inicialização da conexão serial
 try:
@@ -58,8 +58,8 @@ def atualizar_grafico(frame):
             # Verifica se a linha lida corresponde ao padrão esperado
             match = regex_dados.search(linha_serial)
             if match:
-                raw_val = int(match.group(2))
-                mv_val = int(match.group(3))
+                raw_val = int(match.group(1))
+                mv_val = int(match.group(2))
                 
                 # Adiciona os novos valores à fila (removendo os mais antigos automaticamente)
                 y_raw.append(raw_val)

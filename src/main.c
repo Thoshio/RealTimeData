@@ -2,6 +2,10 @@
 #include <zephyr/device.h>             // API para obter e utilizar dispositivos do sistema
 #include <zephyr/drivers/gpio.h>       // API para controle de pinos de entrada/saída (GPIO)
 #include <zephyr/drivers/adc.h>
+#include <zephyr/logging/log.h>
+
+// LOG
+LOG_MODULE_REGISTER(meu_modulo, LOG_LEVEL_WRN);
 
 // ADC
 #define ADC_RESOLUTION      12
@@ -27,7 +31,7 @@ void thread_ADC (void *arg1, void *arg2, void *arg3) {
         int err = adc_read(arg1, arg2); // Faz leitura no adc
         if (err != 0) {
             printk("Falha na leitura do ADC: %d\n", err);
-        } else {
+        } else {            
             // Registra o tempo exato (uptime em milissegundos) logo após a leitura
             timestamp_ms = k_uptime_get_32();
             
