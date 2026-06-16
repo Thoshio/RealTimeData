@@ -3,6 +3,10 @@
 #include <zephyr/drivers/gpio.h>       // API para controle de pinos de entrada/saída (GPIO)
 #include <zephyr/drivers/adc.h>
 #include <zephyr/logging/log.h>
+#include <pwm_z402.h>
+
+#define TPM_MODULE 37500           // Define a frequência do PWM fpwm = (TPM_CLK / (TPM_MODULE * PS)) para um periodo de 100ms
+#define DUTY_CYCLE TPM_MODULE/2     // Define duty_cycle em 50%  ->  pulsos duram 50ms 
 
 // LOG
 LOG_MODULE_REGISTER(meu_modulo, LOG_LEVEL_WRN);
@@ -41,7 +45,7 @@ void thread_ADC (void *arg1, void *arg2, void *arg3) {
         }
 
         //Wait
-        //k_msleep(100);
+        k_msleep(100);
     }
 }
 
@@ -52,13 +56,21 @@ void thread_comunicate (void *arg1, void *arg2, void *arg3) {
     printk("[%u] ADC: %d (raw), %d mV\n", timestamp_us, sample_buffer, mv);
     
     //Wait
-    //k_msleep(100);
+    k_msleep(100);
     }
 }
 
 
 int main(void)
 {
+    /*                  PWM                 */
+    //TPM2 Ch:0 PTB2
+    pwm_tpm_Init(TPM2, TPM_PLLFLL, TPM_MODULE, TPM_CLK, PS_128, EDGE_PWM);
+    pwm_tpm_Ch_Init(TPM2, 0, TPM_PWM_H, GPIOB, 2);
+    pwm_tpm_CnV(TPM2, 0, DUTY_CYCLE);
+
+
+
     /*                  ADC                 */  
     const struct device *adc_dev = DEVICE_DT_GET(DT_NODELABEL(adc0));
     if (!device_is_ready(adc_dev)) {
