@@ -57,6 +57,7 @@ int main(void)
         return 1;
     }
 
+    // PTE20
     struct adc_channel_cfg channel_cfg = {
         .gain = ADC_GAIN,
         .reference = ADC_REFERENCE,
@@ -85,7 +86,7 @@ int main(void)
                     PRIORITY, 0, K_NO_WAIT);
 
 
-                    
+
 
     /*                  Comunication                 */ 
     // Criando thread
