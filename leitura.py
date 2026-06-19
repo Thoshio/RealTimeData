@@ -9,7 +9,7 @@ PORTA_SERIAL = 'COM8'  # Substitua pela porta correta
 BAUD_RATE = 115200
 
 # --- Configurações do Gráfico ---
-MAX_PONTOS = 150  
+MAX_PONTOS = 100
 
 x_tempo = deque(maxlen=MAX_PONTOS)
 y_raw = deque(maxlen=MAX_PONTOS)
@@ -40,7 +40,7 @@ fig.suptitle('Filtro FIR em Tempo Real (Loop de Alta Performance)', fontsize=14)
 linha_raw, = ax.plot([], [], color='blue', alpha=0.4, label='Sinal Bruto (mV)')
 linha_filt, = ax.plot([], [], color='red', linewidth=2, label='Sinal Filtrado (mV)')
 
-ax.set_ylim(-200, 3600)  
+ax.set_ylim(-800, 5000)  
 ax.set_ylabel('Tensão (mV)')
 ax.set_xlabel('Tempo Relativo (segundos)')
 ax.grid(True, linestyle='--', alpha=0.6)
